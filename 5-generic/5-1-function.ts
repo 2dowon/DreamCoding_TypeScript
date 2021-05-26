@@ -13,7 +13,7 @@
     return arg;
   }
 
-  function checkNotNull<GENERIC>(arg: GENERIC | null): GENERIC {
+  function checkNotNull<T>(arg: T | null): T {
     if (arg == null) {
       throw new Error("not valid number!");
     }
