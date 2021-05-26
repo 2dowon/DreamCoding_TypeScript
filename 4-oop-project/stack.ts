@@ -4,49 +4,47 @@ interface Stack {
   pop(): string;
 }
 
-type Link = ListNode | null;
+type StackNode = {
+  readonly value: string;
+  // next: StackNode | undefined;
+  readonly next?: StackNode;
+};
 
-class ListNode {
-  data: string;
-  link: Link;
+class StackImpl implements Stack {
+  private _size: number = 0;
+  private head?: StackNode;
 
-  constructor(data: string) {
-    this.data = data;
-    this.link = null;
+  constructor(private capacity: number) {}
+
+  get size() {
+    return this._size;
   }
-}
-
-class Stacks implements Stack {
-  size: number = 0;
-  value: string;
-  private prevNode: Link = null;
 
   push(value: string): void {
-    const Node: ListNode = new ListNode(value);
-    Node.link = this.prevNode;
-    this.prevNode = Node;
-    this.size++;
+    if (this.size === this.capacity) {
+      throw new Error("Stack is full!");
+    }
+    const node: StackNode = { value, next: this.head };
+    this.head = node;
+    this._size++;
   }
 
   pop(): string {
-    if (this.prevNode === null) {
-      console.log("No item");
-      return;
-    } else {
-      let data = this.prevNode.data;
-      console.log(data);
-      this.prevNode = this.prevNode.link;
-      this.size--;
-      return data;
+    if (this.head == null) {
+      throw new Error("Stack is empty!");
     }
+    const node = this.head;
+    this.head = node.next;
+    this._size--;
+    return node.value;
   }
 }
 
-const stack = new Stacks();
-stack.pop(); // No item
+const stack = new StackImpl(10);
 stack.push("1");
 stack.push("2");
 stack.push("3");
-stack.pop(); // 3
-stack.pop(); // 2
-stack.pop(); // 1
+while (stack.size !== 0) {
+  console.log(stack.pop());
+}
+stack.pop();
